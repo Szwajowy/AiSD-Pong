@@ -72,11 +72,15 @@ class paddle {
 	
 	void move(string way) {
 		if(way == "up") {
-			posY--;
-			render();
+			if(posY > 1) {
+				posY--;
+				render();
+			}
 		} else if(way == "down") {
-			posY++;
-			render();
+			if(posY < mapY-2) {
+				posY++;
+				render();
+			}
 		}
 	}	
 
