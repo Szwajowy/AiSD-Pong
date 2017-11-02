@@ -7,9 +7,6 @@ using namespace std;
 CONST int mapX = 60;
 CONST int mapY = 13;
 
-int paddleY1 =mapY/2;
-int paddleY2 =mapY/2;
-
 void gotoxy(short x, short y) {
 	COORD coord = {x,y};
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
@@ -33,44 +30,78 @@ void map(int x,int y) {
 	cout << endl;
 }
 
-void paddle(bool side, int y) {
-	if (y>0 && y<mapY-1) {
-		if (side == 0) {
-			for(int i=y-3;i<y+4;i++) {
-				gotoxy(1,i+1);
-				cout << " ";
+class paddle {
+	private:
+	short side = 0;
+	short posY = 1, paddleSize = 3;
+	
+	void render() {
+		if (posY>0 && posY<mapY-1) {
+			if (side == 0) {
+				for(int i=1;i<mapY+1;i++) {
+					gotoxy(1,i);
+					cout << " ";	
+				}
+				for(int i=0;i<paddleSize;i++) {
+					gotoxy(1,posY+i);
+					cout << "$";
+				}
+			} else if (side == 1) {
+				for(int i=1;i<mapY+1;i++) {
+					gotoxy(mapX,i);
+					cout << " ";	
+				}
+				for(int i=0;i<paddleSize;i++) {
+					gotoxy(mapX,posY+i);
+					cout << "$";
+				}	
 			}
-			for(int i=y-1;i<y+2;i++) {
-				gotoxy(1,i+1);
-				cout << "$";
-			}
-		} else if (side == 1) {
-			for(int i=y-1;i<y+2;i++) {
-				gotoxy(mapX-1,i+1);
-				cout << "$" << endl;
-			}	
 		}
 	}
-}
+		
+	public:	
+	paddle(short side) {
+		this->side = side;
+		posY = mapY/2;
+		render();
+	}
+	
+	short getPosY() {
+		return posY;
+	}
+	
+	void move(string way) {
+		if(way == "up") {
+			posY--;
+			render();
+		} else if(way == "down") {
+			posY++;
+			render();
+		}
+	}	
+
+};
 
 int main(int argc, char** argv) {
 	
 	map(mapX,mapY);
-	paddle(0,paddleY1);
-	paddle(1,paddleY2);
+	paddle* PaddleLeft = new paddle(0);
+	paddle* PaddleRight = new paddle(1);
 	
 	char ch;
 	
 	do {
 		ch = _getch();
 		if(ch == 'w') {
-		    paddleY1=paddleY1-1;
-			paddle(0,paddleY1);
+		    PaddleLeft->move("up");
 		} else if(ch == 's') {
-			paddleY1 = paddleY1 + 1;
-			paddle(0,paddleY1+1);
+			PaddleLeft->move("down");
+		} else if(ch == 'i') {
+			PaddleRight->move("up");
+		} else if(ch = 'k') {
+			PaddleRight->move("down");
 		}
-	} while(1);
+	} while(ch != 'p');
 	
 	gotoxy(0,30);
 
