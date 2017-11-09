@@ -151,7 +151,7 @@ class ball {
 	move(paddle* PaddleLeft, paddle* PaddleRight) {
 		gotoxy(posX,posY);
 		cout << " ";
-		hit = false;
+		hit = false; 
 		if(way == "left") {
 			if(posX > 2) {
 				if (angle == 45) {
