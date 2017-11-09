@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 #include <windows.h>
 #include <conio.h>
 
@@ -246,6 +247,26 @@ class ball {
 	}
 };
 
+void checkForKey(paddle* PaddleLeft, paddle* PaddleRight) {
+	char ch;
+	
+	do {
+		ch = _getch();
+		
+		if(ch == 'w') {
+			PaddleLeft->move("up");
+		} else if(ch == 's') {
+			PaddleLeft->move("down");
+		} else if(ch == 'i') {
+			PaddleRight->move("up");
+		} else if(ch = 'k') {
+			PaddleRight->move("down");
+		}
+		
+		gotoxy(0,mapY+3);
+	} while(ch!='p');
+}
+
 int main(int argc, char** argv) {
 	
 	renderGUI();	
@@ -258,24 +279,16 @@ int main(int argc, char** argv) {
 	cout << PaddleLeft->getName() << ": [w] up  [s] down   ";
 	cout << PaddleRight->getName() << ": [i] up  [k] down" << endl;
 
-	char ch;
-	
+	thread keyboard(checkForKey, PaddleLeft, PaddleRight);
+
 	do {
 		Ball->move(PaddleLeft, PaddleRight);
 		gotoxy(0,mapY+3);
-		ch = _getch();
-		if(ch == 'w') {
-		    PaddleLeft->move("up");
-		} else if(ch == 's') {
-			PaddleLeft->move("down");
-		} else if(ch == 'i') {
-			PaddleRight->move("up");
-		} else if(ch = 'k') {
-			PaddleRight->move("down");
-		}
-	} while(ch != 'p');
+		Sleep(100);
+		gotoxy(0,mapY+3);
+	} while(1);
 	
-	gotoxy(0,mapY+3);
+	keyboard.join();
 
 	return 0;
 }
